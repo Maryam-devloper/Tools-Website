@@ -1,0 +1,182 @@
+<div class="img-resizer">
+
+<style>
+.img-resizer{
+max-width:500px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+
+.box{
+background:linear-gradient(135deg,#6d28d9,#4c1d95);
+padding:25px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,.25);
+text-align:center;
+color:#fff;
+}
+
+.box h2{
+margin-bottom:15px;
+}
+
+input[type="file"]{
+width:100%;
+padding:10px;
+background:#fff;
+border-radius:10px;
+margin-bottom:15px;
+color:#000;
+}
+
+.inputs{
+display:flex;
+gap:10px;
+}
+
+.inputs input{
+width:50%;
+padding:12px;
+border:none;
+border-radius:10px;
+font-size:16px;
+box-sizing:border-box;
+}
+
+label{
+display:block;
+margin:10px 0;
+font-size:14px;
+}
+
+canvas{
+max-width:100%;
+margin-top:15px;
+background:#fff;
+border-radius:12px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:12px;
+background:#a855f7;
+color:#fff;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+</style>
+
+<div class="box">
+
+<h2>🖼 Image Resizer</h2>
+
+<input type="file" id="upload" accept="image/*">
+
+<div class="inputs">
+<input type="number" id="width" placeholder="Width (px)">
+<input type="number" id="height" placeholder="Height (px)">
+</div>
+
+<label>
+<input type="checkbox" id="lockRatio" checked>
+Maintain Aspect Ratio
+</label>
+
+<canvas id="canvas"></canvas>
+
+<button onclick="resizeImage()">Resize Image</button>
+
+<a id="download">
+<button>Download Image</button>
+</a>
+
+</div>
+
+</div>
+
+<script>
+let img = new Image();
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
+
+let originalWidth = 0;
+let originalHeight = 0;
+
+document.getElementById("upload").onchange = function(e){
+
+let file = e.target.files[0];
+if(!file) return;
+
+let reader = new FileReader();
+
+reader.onload = function(event){
+
+img = new Image();
+
+img.onload = function(){
+
+originalWidth = img.width;
+originalHeight = img.height;
+
+document.getElementById("width").value = img.width;
+document.getElementById("height").value = img.height;
+
+canvas.width = img.width;
+canvas.height = img.height;
+
+ctx.drawImage(img,0,0);
+};
+
+img.src = event.target.result;
+};
+
+reader.readAsDataURL(file);
+};
+
+document.getElementById("width").oninput = function(){
+
+if(document.getElementById("lockRatio").checked){
+let ratio = originalHeight / originalWidth;
+document.getElementById("height").value =
+Math.round(this.value * ratio);
+}
+};
+
+document.getElementById("height").oninput = function(){
+
+if(document.getElementById("lockRatio").checked){
+let ratio = originalWidth / originalHeight;
+document.getElementById("width").value =
+Math.round(this.value * ratio);
+}
+};
+
+function resizeImage(){
+
+let w = document.getElementById("width").value;
+let h = document.getElementById("height").value;
+
+if(!w || !h){
+alert("Enter width and height");
+return;
+}
+
+canvas.width = w;
+canvas.height = h;
+
+ctx.drawImage(img,0,0,w,h);
+
+let link = document.getElementById("download");
+
+link.href = canvas.toDataURL("image/png");
+link.download = "resized-image.png";
+}
+</script>

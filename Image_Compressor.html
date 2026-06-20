@@ -1,0 +1,164 @@
+<div class="compress-tool">
+
+<style>
+.compress-tool{
+max-width:520px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+
+.box{
+background:linear-gradient(135deg,#6d28d9,#4c1d95);
+padding:25px;
+border-radius:22px;
+color:#fff;
+text-align:center;
+}
+
+input[type="file"]{
+width:100%;
+padding:10px;
+background:#fff;
+border-radius:10px;
+margin-bottom:10px;
+color:#000;
+}
+
+input[type="range"]{
+width:100%;
+margin:10px 0;
+}
+
+.info{
+font-size:14px;
+margin:8px 0;
+}
+
+canvas{
+max-width:100%;
+background:#fff;
+border-radius:10px;
+margin-top:10px;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:12px;
+background:#a855f7;
+color:#fff;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.small{
+font-size:13px;
+opacity:0.9;
+}
+</style>
+
+<div class="box">
+
+<h2>🗜 Image Compressor</h2>
+
+<input type="file" id="upload" accept="image/*">
+
+<div class="small">Compression Quality</div>
+<input type="range" id="quality" min="10" max="100" value="70">
+
+<div class="info">
+Quality: <span id="qval">70</span>%
+</div>
+
+<div class="info">
+Original Size: <span id="originalSize">-</span>
+</div>
+
+<div class="info">
+Compressed Size: <span id="newSize">-</span>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<button onclick="compressImage()">Compress & Preview</button>
+<button onclick="downloadImg()">Download</button>
+
+</div>
+
+</div>
+
+<script>
+let img = new Image();
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
+
+let compressedData = "";
+
+document.getElementById("upload").onchange = function(e){
+let file = e.target.files[0];
+if(!file) return;
+
+document.getElementById("originalSize").innerText =
+(file.size/1024).toFixed(2) + " KB";
+
+let reader = new FileReader();
+
+reader.onload = function(ev){
+
+img = new Image();
+
+img.onload = function(){
+canvas.width = img.width;
+canvas.height = img.height;
+ctx.drawImage(img,0,0);
+};
+
+img.src = ev.target.result;
+};
+
+reader.readAsDataURL(file);
+};
+
+document.getElementById("quality").oninput = function(){
+document.getElementById("qval").innerText = this.value;
+};
+
+function compressImage(){
+
+let quality = document.getElementById("quality").value / 100;
+
+// default to jpeg compression
+compressedData = canvas.toDataURL("image/jpeg", quality);
+
+// preview (re-draw compressed version)
+let tempImg = new Image();
+
+tempImg.onload = function(){
+canvas.width = tempImg.width;
+canvas.height = tempImg.height;
+ctx.drawImage(tempImg,0,0);
+};
+
+tempImg.src = compressedData;
+
+// show compressed size
+let size = Math.round((compressedData.length * 3) / 4 / 1024);
+document.getElementById("newSize").innerText = size + " KB";
+}
+
+function downloadImg(){
+
+if(!compressedData){
+alert("Compress image first");
+return;
+}
+
+let link = document.createElement("a");
+link.download = "compressed-image.jpg";
+link.href = compressedData;
+link.click();
+}
+</script>

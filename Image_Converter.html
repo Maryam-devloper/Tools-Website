@@ -1,0 +1,140 @@
+<div class="img-converter">
+
+<style>
+.img-converter{
+max-width:500px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+
+.box{
+background:linear-gradient(135deg,#6d28d9,#4c1d95);
+padding:25px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,.25);
+text-align:center;
+color:#fff;
+}
+
+.box h2{
+margin-bottom:15px;
+}
+
+input[type="file"]{
+width:100%;
+padding:10px;
+background:#fff;
+border-radius:10px;
+margin-bottom:15px;
+color:#000;
+}
+
+select{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+margin-bottom:15px;
+font-size:16px;
+}
+
+canvas{
+max-width:100%;
+margin-top:15px;
+border-radius:12px;
+background:#fff;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:10px;
+border:none;
+border-radius:12px;
+background:#a855f7;
+color:#fff;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.download{
+margin-top:10px;
+display:none;
+}
+</style>
+
+<div class="box">
+
+<h2>🖼 Image Format Converter</h2>
+
+<input type="file" id="upload" accept="image/*">
+
+<select id="format">
+<option value="image/png">PNG</option>
+<option value="image/jpeg">JPG</option>
+<option value="image/webp">WEBP</option>
+</select>
+
+<canvas id="canvas"></canvas>
+
+<button onclick="convertImage()">Convert Image</button>
+
+<a id="download" class="download">
+<button>Download Image</button>
+</a>
+
+</div>
+
+</div>
+
+<script>
+let img=new Image();
+let canvas=document.getElementById("canvas");
+let ctx=canvas.getContext("2d");
+
+document.getElementById("upload").onchange=function(e){
+
+let file=e.target.files[0];
+
+if(!file)return;
+
+let reader=new FileReader();
+
+reader.onload=function(event){
+
+img=new Image();
+
+img.onload=function(){
+
+canvas.width=img.width;
+canvas.height=img.height;
+
+ctx.drawImage(img,0,0);
+};
+
+img.src=event.target.result;
+};
+
+reader.readAsDataURL(file);
+};
+
+function convertImage(){
+
+let format=document.getElementById("format").value;
+
+let dataURL=canvas.toDataURL(format,1.0);
+
+let download=document.getElementById("download");
+
+download.href=dataURL;
+
+download.download="converted-image";
+
+download.style.display="block";
+}
+</script>

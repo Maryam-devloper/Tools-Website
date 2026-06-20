@@ -1,0 +1,252 @@
+<div class="picker-wheel-tool">
+
+<style>
+.picker-wheel-tool{
+max-width:650px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+
+.wheel-box{
+background:linear-gradient(135deg,#6d28d9,#4c1d95);
+padding:25px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,.25);
+text-align:center;
+max-width:450px;
+margin:auto;
+}
+
+.wheel-box h2{
+color:#fff;
+margin-bottom:15px;
+}
+
+.wheel-box p{
+color:#fff;
+margin-bottom:10px;
+}
+
+textarea{
+width:100%;
+height:120px;
+border:none;
+border-radius:12px;
+padding:12px;
+font-size:15px;
+resize:none;
+box-sizing:border-box;
+outline:none;
+}
+
+.wheel-wrapper{
+position:relative;
+width:320px;
+margin:20px auto;
+}
+
+#wheel{
+width:320px;
+height:320px;
+border-radius:50%;
+border:8px solid #fff;
+background:#fff;
+display:block;
+transition:transform 5s cubic-bezier(.17,.67,.12,.99);
+}
+
+.pointer{
+position:absolute;
+right:-25px;
+top:50%;
+transform:translateY(-50%);
+width:0;
+height:0;
+border-top:18px solid transparent;
+border-bottom:18px solid transparent;
+border-right:35px solid #facc15;
+z-index:10;
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+50%{
+filter:drop-shadow(0 0 12px #facc15);
+}
+}
+
+button{
+margin-top:15px;
+padding:14px 24px;
+border:none;
+border-radius:12px;
+background:#a855f7;
+color:#fff;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.result{
+margin-top:20px;
+color:#fff;
+font-size:22px;
+font-weight:bold;
+padding:14px;
+background:rgba(255,255,255,.12);
+border-radius:12px;
+}
+
+@media(max-width:480px){
+
+.wheel-wrapper{
+width:260px;
+}
+
+#wheel{
+width:260px;
+height:260px;
+}
+
+.pointer{
+right:-20px;
+border-top:14px solid transparent;
+border-bottom:14px solid transparent;
+border-right:28px solid #facc15;
+}
+}
+</style>
+
+<div class="wheel-box">
+
+<h2>🎯 Picker Wheel</h2>
+
+<p>Enter one option per line</p>
+
+<textarea id="items">Apple
+Banana
+Orange
+Mango
+Grapes</textarea>
+
+<div class="wheel-wrapper">
+
+<div class="pointer"></div>
+
+<canvas id="wheel" width="320" height="320"></canvas>
+
+</div>
+
+<button onclick="spinWheel()">🎡 Spin Wheel</button>
+
+<div class="result" id="result">
+Winner: -
+</div>
+
+</div>
+
+<script>
+const canvas=document.getElementById("wheel");
+const ctx=canvas.getContext("2d");
+
+let items=[];
+let rotation=0;
+
+function drawWheel(){
+
+items=document.getElementById("items")
+.value
+.split("\n")
+.filter(item=>item.trim()!="");
+
+ctx.clearRect(0,0,320,320);
+
+if(items.length===0){
+return;
+}
+
+let angle=(2*Math.PI)/items.length;
+
+for(let i=0;i<items.length;i++){
+
+ctx.beginPath();
+
+ctx.moveTo(160,160);
+
+ctx.arc(
+160,
+160,
+160,
+i*angle,
+(i+1)*angle
+);
+
+ctx.fillStyle=
+`hsl(${i*360/items.length},80%,60%)`;
+
+ctx.fill();
+
+ctx.save();
+
+ctx.translate(160,160);
+
+ctx.rotate(i*angle+angle/2);
+
+ctx.fillStyle="#111";
+
+ctx.font="bold 14px Arial";
+
+ctx.textAlign="right";
+
+ctx.fillText(items[i],140,5);
+
+ctx.restore();
+}
+}
+
+drawWheel();
+
+document.getElementById("items")
+.addEventListener("input",drawWheel);
+
+function spinWheel(){
+
+if(items.length<2){
+alert("Please enter at least 2 options");
+return;
+}
+
+let randomDegree=
+Math.floor(Math.random()*360);
+
+rotation+=1800+randomDegree;
+
+canvas.style.transform=
+`rotate(${rotation}deg)`;
+
+setTimeout(()=>{
+
+let normalized=
+rotation%360;
+
+let anglePer=
+360/items.length;
+
+let winningAngle=
+(360-normalized)%360;
+
+let winnerIndex=
+Math.floor(winningAngle/anglePer);
+
+document.getElementById("result").innerHTML=
+"🏆 Winner: "+items[winnerIndex];
+
+},5000);
+}
+</script>
+
+</div>

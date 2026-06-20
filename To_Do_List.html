@@ -1,0 +1,251 @@
+<div class="todo-pro">
+
+<style>
+.todo-pro{
+max-width:600px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+
+.todo-box{
+background:linear-gradient(135deg,#6d28d9,#4c1d95);
+padding:25px;
+border-radius:20px;
+color:#fff;
+}
+
+h2{
+text-align:center;
+margin-bottom:15px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin:6px 0;
+border:none;
+border-radius:10px;
+box-sizing:border-box;
+}
+
+button{
+padding:12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.add-btn{
+width:100%;
+background:#a855f7;
+color:#fff;
+margin-top:8px;
+}
+
+.search{
+margin-top:15px;
+}
+
+.stats{
+margin-top:15px;
+padding:10px;
+background:rgba(255,255,255,.15);
+border-radius:10px;
+}
+
+.progress{
+height:12px;
+background:#ddd;
+border-radius:20px;
+overflow:hidden;
+margin-top:8px;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:#22c55e;
+}
+
+.task{
+background:rgba(255,255,255,.15);
+padding:12px;
+border-radius:10px;
+margin-top:10px;
+}
+
+.done{
+text-decoration:line-through;
+opacity:.6;
+}
+
+.high{color:#ff6b6b;}
+.medium{color:#ffd166;}
+.low{color:#4ade80;}
+
+.task-buttons{
+margin-top:8px;
+display:flex;
+gap:8px;
+}
+
+.complete{
+background:#22c55e;
+color:#fff;
+}
+
+.delete{
+background:#ef4444;
+color:#fff;
+}
+</style>
+
+<div class="todo-box">
+
+<h2>📝 Smart To-Do List</h2>
+
+<input type="text" id="taskText" placeholder="Enter Task">
+
+<select id="priority">
+<option value="High">🔴 High Priority</option>
+<option value="Medium">🟡 Medium Priority</option>
+<option value="Low">🟢 Low Priority</option>
+</select>
+
+<input type="date" id="dueDate">
+
+<button class="add-btn" onclick="addTask()">Add Task</button>
+
+<input class="search" type="text" id="search" placeholder="🔍 Search Tasks" onkeyup="renderTasks()">
+
+<div class="stats">
+<div>Total Tasks: <span id="total">0</span></div>
+<div>Completed: <span id="completed">0</span></div>
+<div>Pending: <span id="pending">0</span></div>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+</div>
+
+<div id="taskList"></div>
+
+</div>
+
+<script>
+let tasks=JSON.parse(localStorage.getItem("tasks"))||[];
+
+function saveTasks(){
+localStorage.setItem("tasks",JSON.stringify(tasks));
+}
+
+function addTask(){
+
+let text=document.getElementById("taskText").value.trim();
+let priority=document.getElementById("priority").value;
+let due=document.getElementById("dueDate").value;
+
+if(text===""){
+alert("Enter task");
+return;
+}
+
+tasks.push({
+text:text,
+priority:priority,
+due:due,
+done:false
+});
+
+document.getElementById("taskText").value="";
+document.getElementById("dueDate").value="";
+
+saveTasks();
+renderTasks();
+}
+
+function toggleTask(i){
+tasks[i].done=!tasks[i].done;
+saveTasks();
+renderTasks();
+}
+
+function deleteTask(i){
+tasks.splice(i,1);
+saveTasks();
+renderTasks();
+}
+
+function renderTasks(){
+
+let search=document.getElementById("search").value.toLowerCase();
+
+let html="";
+
+let completed=0;
+
+tasks.forEach((task,index)=>{
+
+if(!task.text.toLowerCase().includes(search)) return;
+
+if(task.done) completed++;
+
+let cls="";
+
+if(task.priority==="High") cls="high";
+if(task.priority==="Medium") cls="medium";
+if(task.priority==="Low") cls="low";
+
+html+=`
+<div class="task">
+
+<div class="${task.done?'done':''}">
+<b>${task.text}</b>
+</div>
+
+<div class="${cls}">
+⭐ ${task.priority}
+</div>
+
+<div>
+📅 ${task.due || "No Date"}
+</div>
+
+<div class="task-buttons">
+
+<button class="complete"
+onclick="toggleTask(${index})">
+${task.done ? "Undo" : "Complete"}
+</button>
+
+<button class="delete"
+onclick="deleteTask(${index})">
+Delete
+</button>
+
+</div>
+
+</div>
+`;
+});
+
+document.getElementById("taskList").innerHTML=html;
+
+let total=tasks.length;
+let pending=total-completed;
+
+document.getElementById("total").innerText=total;
+document.getElementById("completed").innerText=completed;
+document.getElementById("pending").innerText=pending;
+
+let percent=total?((completed/total)*100):0;
+
+document.getElementById("progressBar").style.width=
+percent+"%";
+}
+
+renderTasks();
+</script>
+
+</div>

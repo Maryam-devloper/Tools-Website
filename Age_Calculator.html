@@ -1,0 +1,173 @@
+
+<div class="age-calculator">
+<style>
+.age-calculator{
+max-width:500px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+.age-box{
+background:linear-gradient(135deg,#6d28d9,#4c1d95);
+padding:25px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,.25);
+}
+.age-box h2{
+text-align:center;
+color:#fff;
+margin-bottom:20px;
+font-size:28px;
+}
+.age-box label{
+display:block;
+color:#fff;
+font-weight:bold;
+margin-bottom:8px;
+}
+.age-box input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:12px;
+font-size:16px;
+box-sizing:border-box;
+margin-bottom:15px;
+background:rgba(255,255,255,.15) !important;
+color:#ffffff !important;
+}
+.age-box button{
+width:100%;
+padding:14px;
+background:#a855f7;
+color:#fff;
+border:none;
+border-radius:12px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+.age-box button:hover{
+transform:translateY(-2px);
+}
+.result{
+display:none;
+margin-top:20px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(8px);
+padding:18px;
+border-radius:15px;
+color:#fff;
+}
+.result-item{
+padding:10px;
+margin-bottom:8px;
+background:rgba(255,255,255,.08);
+border-radius:10px;
+}
+.result-item strong{
+float:right;
+}
+
+@media(max-width:480px){
+.age-box{
+padding:18px;
+}
+.age-box h2{
+font-size:24px;
+}
+}
+</style>
+<div class="age-box">
+<h2>Age Calculator</h2>
+<label>Select Your Date of Birth</label>
+<input type="date" id="dob">
+<button onclick="calculateAge()">
+Calculate Age
+</button>
+<div class="result" id="result">
+<div class="result-item">
+Age <strong id="age"></strong>
+</div>
+<div class="result-item">
+Total Months <strong id="months"></strong>
+</div>
+<div class="result-item">
+Total Weeks <strong id="weeks"></strong>
+</div>
+<div class="result-item">
+Total Days <strong id="days"></strong>
+</div>
+<div class="result-item">
+Total Hours <strong id="hours"></strong>
+</div>
+<div class="result-item">
+Total Minutes <strong id="minutes"></strong>
+</div>
+<div class="result-item">
+Total Seconds <strong id="seconds"></strong>
+</div>
+</div>
+</div>
+
+<script>
+function calculateAge(){
+let dob=document.getElementById("dob").value;
+if(!dob){
+alert("Please select your birth date");
+return;
+}
+let birthDate=new Date(dob);
+let today=new Date();
+let years=today.getFullYear()-birthDate.getFullYear();
+let months=today.getMonth()-birthDate.getMonth();
+let days=today.getDate()-birthDate.getDate();
+if(days<0){
+months--;
+let lastMonthDays=new Date(
+today.getFullYear(),
+today.getMonth(),
+0
+).getDate();
+days+=lastMonthDays;
+}
+if(months<0){
+years--;
+months+=12;
+}
+let diff=today-birthDate;
+let totalDays=Math.floor(
+diff/(1000*60*60*24)
+);
+let totalWeeks=Math.floor(
+totalDays/7
+);
+let totalHours=Math.floor(
+diff/(1000*60*60)
+);
+let totalMinutes=Math.floor(
+diff/(1000*60)
+);
+let totalSeconds=Math.floor(
+diff/1000
+);
+let totalMonths=
+years*12+months;
+document.getElementById("age").innerHTML=
+years+"y "+months+"m "+days+"d";
+document.getElementById("months").innerHTML=
+totalMonths.toLocaleString();
+document.getElementById("weeks").innerHTML=
+totalWeeks.toLocaleString();
+document.getElementById("days").innerHTML=
+totalDays.toLocaleString();
+document.getElementById("hours").innerHTML=
+totalHours.toLocaleString();
+document.getElementById("minutes").innerHTML=
+totalMinutes.toLocaleString();
+document.getElementById("seconds").innerHTML=
+totalSeconds.toLocaleString();
+document.getElementById("result").style.display="block";
+}
+</script>
+</div>

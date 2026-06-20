@@ -1,0 +1,389 @@
+<div class="toolfactory-calc">
+
+<style>
+.toolfactory-calc{
+max-width:400px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+
+.calc-box{
+background:linear-gradient(135deg,#0f172a,#1e293b);
+padding:20px;
+border-radius:25px;
+box-shadow:0 15px 35px rgba(0,0,0,.35);
+}
+
+#display{
+width:100%;
+height:70px;
+border:none;
+border-radius:15px;
+background:#ffffff;
+color:#111827;
+font-size:30px;
+font-weight:bold;
+text-align:right;
+padding:15px;
+box-sizing:border-box;
+margin-bottom:10px;
+box-shadow:inset 0 2px 8px rgba(0,0,0,.15);
+}
+
+.mode{
+color:#fff;
+text-align:center;
+font-size:14px;
+margin-bottom:12px;
+font-weight:bold;
+}
+
+.buttons{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:6px;
+}
+
+.buttons button{
+height:45px;
+border:none;
+border-radius:14px;
+font-size:14px;
+font-weight:600;
+cursor:pointer;
+transition:.2s;
+background:#334155;
+color:#fff;
+}
+
+.buttons button:hover{
+transform:translateY(-2px);
+}
+
+.special{
+background:#2563eb !important;
+}
+
+.operator{
+background:#f97316 !important;
+}
+
+.equal{
+background:#10b981 !important;
+font-size:24px;
+}
+
+.history{
+margin-top:15px;
+background:#111827;
+color:#fff;
+padding:12px;
+border-radius:15px;
+max-height:180px;
+overflow-y:auto;
+}
+
+.history h3{
+margin:0 0 10px;
+font-size:16px;
+}
+
+.history-item{
+padding:5px 0;
+border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+@media(max-width:480px){
+.buttons button{
+font-size:15px;
+height:52px;
+}
+
+#display{
+font-size:28px;
+}
+}
+</style>
+
+<div class="calc-box">
+
+<input type="text" id="display" readonly>
+
+<div class="mode">
+MODE : <span id="modeText">DEG</span>
+</div>
+
+<div class="buttons">
+
+<button class="special" onclick="clearDisplay()">AC</button>
+<button class="special" onclick="backspace()">⌫</button>
+<button class="special" onclick="toggleMode()">DEG/RAD</button>
+<button class="special" onclick="append('Math.PI')">π</button>
+<button class="special" onclick="append('Math.E')">e</button>
+
+<button class="special" onclick="sinFunc()">sin</button>
+<button class="special" onclick="cosFunc()">cos</button>
+<button class="special" onclick="tanFunc()">tan</button>
+<button class="special" onclick="logFunc()">log</button>
+<button class="special" onclick="lnFunc()">ln</button>
+
+<button class="special" onclick="square()">x²</button>
+<button class="special" onclick="power()">xʸ</button>
+<button class="special" onclick="sqrtFunc()">√</button>
+<button class="special" onclick="factorial()">x!</button>
+<button class="special" onclick="append('(')">(</button>
+
+<button class="special" onclick="append(')')">)</button>
+<button class="special" onclick="memoryAdd()">M+</button>
+<button class="special" onclick="memorySub()">M-</button>
+<button class="special" onclick="memoryRecall()">MR</button>
+<button class="special" onclick="memoryClear()">MC</button>
+
+<button onclick="append('7')">7</button>
+<button onclick="append('8')">8</button>
+<button onclick="append('9')">9</button>
+<button class="operator" onclick="append('/')">÷</button>
+<button class="special" onclick="copyResult()">📋</button>
+
+<button onclick="append('4')">4</button>
+<button onclick="append('5')">5</button>
+<button onclick="append('6')">6</button>
+<button class="operator" onclick="append('*')">×</button>
+<button class="special" onclick="append('%')">%</button>
+
+<button onclick="append('1')">1</button>
+<button onclick="append('2')">2</button>
+<button onclick="append('3')">3</button>
+<button class="operator" onclick="append('-')">−</button>
+<button class="special" onclick="append('.')">.</button>
+
+<button onclick="append('0')">0</button>
+<button class="operator" onclick="append('+')">+</button>
+<button class="equal" style="grid-column:span 3;" onclick="calculate()">=</button>
+
+</div>
+
+<div class="history">
+<h3>Calculation History</h3>
+<div id="historyList"></div>
+</div>
+
+</div>
+
+<script>
+let memory=0;
+let isDegree=true;
+
+function append(val){
+document.getElementById("display").value+=val;
+}
+
+function clearDisplay(){
+document.getElementById("display").value="";
+}
+
+function backspace(){
+let d=document.getElementById("display");
+d.value=d.value.slice(0,-1);
+}
+
+function calculate(){
+let d=document.getElementById("display");
+
+try{
+let exp=d.value;
+let result=eval(exp);
+
+document.getElementById("historyList").innerHTML=
+'<div class="history-item">'+exp+' = '+result+'</div>'
++document.getElementById("historyList").innerHTML;
+
+d.value=result;
+
+}catch{
+d.value="Error";
+}
+}
+
+
+function power(){
+let base=Number(prompt("Enter base"));
+let exponent=Number(prompt("Enter exponent"));
+if(isNaN(base)||isNaN(exponent)){
+return;
+}
+document.getElementById("display").value=
+Math.pow(base,exponent);
+}
+
+function sinFunc(){
+let d=document.getElementById("display");
+
+try{
+let x=Number(eval(d.value));
+
+if(isDegree){
+x=x*Math.PI/180;
+}
+
+d.value=Math.sin(x);
+}catch{
+d.value="Error";
+}
+}
+
+function cosFunc(){
+let d=document.getElementById("display");
+
+try{
+let x=Number(eval(d.value));
+
+if(isDegree){
+x=x*Math.PI/180;
+}
+
+d.value=Math.cos(x);
+}catch{
+d.value="Error";
+}
+}
+
+function tanFunc(){
+let d=document.getElementById("display");
+
+try{
+let x=Number(eval(d.value));
+
+if(isDegree){
+x=x*Math.PI/180;
+}
+
+d.value=Math.tan(x);
+}catch{
+d.value="Error";
+}
+}
+
+function sqrtFunc(){
+let d=document.getElementById("display");
+
+try{
+let x=Number(eval(d.value));
+
+if(x<0){
+d.value="Error";
+return;
+}
+
+d.value=Math.sqrt(x);
+}catch{
+d.value="Error";
+}
+}
+
+function square(){
+let d=document.getElementById("display");
+
+try{
+let x=Number(eval(d.value));
+d.value=x*x;
+}catch{
+d.value="Error";
+}
+}
+
+function factorial(){
+
+let d=document.getElementById("display");
+
+try{
+
+let n=parseInt(eval(d.value));
+
+if(n<0 || isNaN(n)){
+d.value="Error";
+return;
+}
+
+let result=1;
+
+for(let i=2;i<=n;i++){
+result*=i;
+}
+
+d.value=result;
+
+}catch{
+d.value="Error";
+}
+}
+
+function logFunc(){
+
+let d=document.getElementById("display");
+
+try{
+let x=Number(eval(d.value));
+
+if(x<=0){
+d.value="Error";
+return;
+}
+
+d.value=Math.log10(x);
+}catch{
+d.value="Error";
+}
+}
+
+function lnFunc(){
+
+let d=document.getElementById("display");
+
+try{
+let x=Number(eval(d.value));
+
+if(x<=0){
+d.value="Error";
+return;
+}
+
+d.value=Math.log(x);
+}catch{
+d.value="Error";
+}
+}
+
+function toggleMode(){
+isDegree=!isDegree;
+
+document.getElementById("modeText").innerText=
+isDegree ? "DEG" : "RAD";
+}
+
+function copyResult(){
+navigator.clipboard.writeText(
+document.getElementById("display").value
+);
+
+alert("Result copied!");
+}
+
+function memoryAdd(){
+memory+=Number(document.getElementById("display").value)||0;
+}
+
+function memorySub(){
+memory-=Number(document.getElementById("display").value)||0;
+}
+
+function memoryRecall(){
+document.getElementById("display").value=memory;
+}
+
+function memoryClear(){
+memory=0;
+}
+</script>
+
+</div>

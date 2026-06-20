@@ -1,0 +1,294 @@
+
+<div class="gpa-tool">
+<style>
+.gpa-tool *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+.gpa-tool{
+    max-width:700px;
+    margin:30px auto;
+    padding:30px;
+    border-radius:25px;
+    background:linear-gradient(135deg,#667eea,#764ba2,#6dd5ed);
+    box-shadow:0 10px 35px rgba(0,0,0,0.25);
+    color:white;
+}
+.gpa-tool h1{
+    text-align:center;
+    font-size:34px;
+    margin-bottom:10px;
+}
+.gpa-tool p{
+    text-align:center;
+    margin-bottom:25px;
+    opacity:0.9;
+    font-size:16px;
+}
+.gpa-tool .scale-box{
+    margin-bottom:20px;
+}
+.gpa-tool select{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    font-size:17px;
+    outline:none;
+    background:white;
+    color:#222;
+    font-weight:bold;
+}
+.gpa-tool .subject-box{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+    background:rgba(255,255,255,0.12);
+    padding:12px;
+    border-radius:18px;
+    flex-wrap:wrap;
+}
+.gpa-tool .subject-title{
+    min-width:110px;
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    color:#ffe082;
+    background:rgba(255,255,255,0.18);
+    padding:14px 10px;
+    border-radius:14px;
+}
+.gpa-tool input{
+    flex:1;
+    min-width:120px;
+    padding:15px;
+    border:none;
+    border-radius:14px;
+    outline:none;
+    font-size:16px;
+    background:white;
+    color:#222;
+    font-weight:bold;
+}
+.gpa-tool input:focus{
+    box-shadow:0 0 15px rgba(0,255,255,0.7);
+    transform:scale(1.02);
+    transition:0.3s;
+}
+.gpa-tool .remove-btn{
+    width:55px;
+    height:55px;
+    border:none;
+    border-radius:14px;
+    background:#ff4d4d;
+    color:white;
+    font-size:22px;
+    cursor:pointer;
+    flex-shrink:0;
+}
+.gpa-tool .remove-btn:hover{
+    background:#e60000;
+}
+.gpa-tool .btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:15px;
+    font-size:18px;
+    font-weight:bold;
+    color:white;
+    cursor:pointer;
+    margin-top:12px;
+    transition:0.3s;
+}
+.gpa-tool .add-btn{
+    background:linear-gradient(45deg,#00c853,#64dd17);
+}
+.gpa-tool .calc-btn{
+    background:linear-gradient(45deg,#ff512f,#dd2476);
+}
+.gpa-tool .btn:hover{
+    transform:translateY(-3px);
+}
+.gpa-tool .result{
+    margin-top:25px;
+    padding:25px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.15);
+    text-align:center;
+    display:none;
+}
+.gpa-tool .gpa-value{
+    font-size:50px;
+    font-weight:bold;
+    color:#ffe082;
+    margin-top:10px;
+}
+.gpa-tool .grade{
+    margin-top:12px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+@media(max-width:700px){
+    .gpa-tool .subject-box{
+        flex-direction:column;
+        align-items:stretch;
+    }
+    .gpa-tool .subject-title{
+        width:100%;
+    }
+    .gpa-tool .remove-btn{
+        width:100%;
+    }
+}
+
+</style>
+<h1>GPA Calculator</h1>
+<p> Add subjects, credit hours, and grades to calculate GPA instantly </p>
+<div class="scale-box">
+<select id="gradingScale">
+    <option value="4">4.0 GPA Scale</option>
+    <option value="5">5.0 GPA Scale</option>
+</select>
+</div>
+<div id="subjectsContainer">
+<div class="subject-box">
+<div class="subject-title">
+Subject 1
+</div>
+<input type="number"
+placeholder="Credit Hours"
+class="creditHours">
+<input type="number"
+placeholder="Grade Points"
+class="gradePoints"
+step="0.01">
+<button class="remove-btn"
+onclick="removeSubject(this)">×</button>
+</div>
+</div>
+
+<button class="btn add-btn"
+onclick="addSubject()"> + Add Subject </button>
+<button class="btn calc-btn"
+onclick="calculateGPA()"> Calculate GPA </button>
+<div class="result" id="resultBox">
+<h2>Your GPA</h2>
+<div class="gpa-value" id="gpaResult"> 0.00 </div>
+<div class="grade" id="gradeText"></div>
+</div>
+<script>
+
+function updateSubjectNumbers(){
+    let boxes =
+    document.querySelectorAll('.subject-box');
+    boxes.forEach((box,index)=>{
+        box.querySelector('.subject-title')
+        .innerHTML =
+        "Subject " + (index + 1);
+
+    });
+}
+
+function addSubject(){
+    let container =
+    document.getElementById('subjectsContainer');
+    let subjectCount =
+    container.children.length + 1;
+    let div = document.createElement('div');
+    div.className = 'subject-box';
+    div.innerHTML = `
+    <div class="subject-title">
+    Subject ${subjectCount}
+    </div>
+    <input type="number"
+    placeholder="Credit Hours"
+    class="creditHours">
+    <input type="number"
+    placeholder="Grade Points"
+    class="gradePoints"
+    step="0.01">
+
+    <button class="remove-btn"
+    onclick="removeSubject(this)">×</button>
+    `;
+    container.appendChild(div);
+    updateSubjectNumbers();
+}
+
+function removeSubject(button){
+    let container =
+    document.getElementById('subjectsContainer');
+    if(container.children.length > 1){
+        button.parentElement.remove();
+        updateSubjectNumbers();
+    }
+    else{
+        alert("At least one subject is required");
+    }
+}
+
+function calculateGPA(){
+    let credits = document.querySelectorAll('.creditHours');
+    let grades = document.querySelectorAll('.gradePoints');
+    let totalPoints = 0;
+    let totalCredits = 0;
+    let scale = parseFloat(document.getElementById('gradingScale').value);
+    for(let i=0; i<credits.length; i++){
+        let ch = parseFloat(credits[i].value);
+        let gp = parseFloat(grades[i].value);
+        if(!isNaN(ch) && !isNaN(gp)){
+            if(gp > scale){
+                alert( "Grade point exceeds selected GPA scale" );
+                return;
+            }
+            totalPoints += ch * gp;
+            totalCredits += ch;
+        }
+    }
+    if(totalCredits == 0){
+        alert("Please enter values");
+        return;
+    }
+    let gpa = totalPoints / totalCredits;
+    document.getElementById('gpaResult')
+    .innerHTML = gpa.toFixed(2);
+    let text = "";
+    if(scale == 4){
+        if(gpa >= 3.7){
+            text = "Excellent 🏆";
+        }
+        else if(gpa >= 3){
+            text = "Very Good 🎉";
+        }
+        else if(gpa >= 2){
+            text = "Good 👍";
+        }
+        else{
+            text = "Need Improvement 📚";
+        }
+    }
+    else{
+        if(gpa >= 4.5){
+            text = "Excellent 🏆";
+        }
+        else if(gpa >= 3.5){
+            text = "Very Good 🎉";
+        }
+        else if(gpa >= 2.5){
+            text = "Good 👍";
+        }
+        else{
+            text = "Need Improvement 📚";
+        }
+    }
+    document.getElementById('gradeText')
+    .innerHTML = text;
+    document.getElementById('resultBox')
+    .style.display = 'block';
+}
+</script>

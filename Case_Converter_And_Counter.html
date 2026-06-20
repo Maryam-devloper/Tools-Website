@@ -1,0 +1,261 @@
+<div class="texttool">
+
+<style>
+.texttool{
+max-width:700px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+
+.tool-box{
+background:linear-gradient(135deg,#6d28d9,#4c1d95);
+padding:25px;
+border-radius:20px;
+color:#fff;
+}
+
+.tool-box h2{
+text-align:center;
+margin-bottom:15px;
+}
+
+textarea{
+width:100%;
+height:220px;
+padding:15px;
+border:none;
+border-radius:12px;
+font-size:16px;
+resize:vertical;
+box-sizing:border-box;
+outline:none;
+}
+
+.buttons{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:15px;
+}
+
+.buttons button{
+padding:12px;
+border:none;
+border-radius:10px;
+background:#a855f7;
+color:#fff;
+font-weight:bold;
+cursor:pointer;
+}
+
+.buttons button:hover{
+opacity:.9;
+}
+
+.stats{
+margin-top:15px;
+background:rgba(255,255,255,.15);
+padding:15px;
+border-radius:12px;
+}
+
+.stat{
+margin:8px 0;
+font-size:15px;
+}
+
+@media(max-width:600px){
+
+.buttons{
+grid-template-columns:repeat(2,1fr);
+}
+
+textarea{
+height:180px;
+}
+
+}
+</style>
+
+<div class="tool-box">
+
+<h2>📝 Case Converter & Word Counter</h2>
+
+<textarea
+id="text"
+placeholder="Enter or paste your text here..."
+oninput="updateStats()"></textarea>
+
+<div class="buttons">
+
+<button onclick="toUpper()">UPPERCASE</button>
+
+<button onclick="toLower()">lowercase</button>
+
+<button onclick="toTitle()">Title Case</button>
+
+<button onclick="toSentence()">Sentence Case</button>
+
+<button onclick="copyText()">Copy</button>
+
+<button onclick="clearText()">Clear</button>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+📄 Words:
+<span id="words">0</span>
+</div>
+
+<div class="stat">
+🔠 Characters:
+<span id="chars">0</span>
+</div>
+
+<div class="stat">
+🔡 Characters (No Spaces):
+<span id="charsNoSpace">0</span>
+</div>
+
+<div class="stat">
+📏 Lines:
+<span id="lines">0</span>
+</div>
+
+<div class="stat">
+📑 Paragraphs:
+<span id="paragraphs">0</span>
+</div>
+
+<div class="stat">
+⏱ Reading Time:
+<span id="reading">0</span> min
+</div>
+
+</div>
+
+</div>
+
+<script>
+function getText(){
+return document.getElementById("text");
+}
+
+function toUpper(){
+
+let t=getText();
+
+t.value=t.value.toUpperCase();
+
+updateStats();
+}
+
+function toLower(){
+
+let t=getText();
+
+t.value=t.value.toLowerCase();
+
+updateStats();
+}
+
+function toTitle(){
+
+let t=getText();
+
+t.value=t.value
+.toLowerCase()
+.replace(/\b\w/g,function(char){
+
+return char.toUpperCase();
+
+});
+
+updateStats();
+}
+
+function toSentence(){
+
+let t=getText();
+
+t.value=t.value
+.toLowerCase()
+.replace(/(^\s*\w|[.!?]\s*\w)/g,function(c){
+
+return c.toUpperCase();
+
+});
+
+updateStats();
+}
+
+function copyText(){
+
+let text=document.getElementById("text").value;
+
+navigator.clipboard.writeText(text)
+.then(function(){
+
+alert("Text Copied Successfully!");
+
+})
+.catch(function(){
+
+alert("Copy Failed");
+
+});
+
+}
+
+function clearText(){
+
+document.getElementById("text").value="";
+
+updateStats();
+}
+
+function updateStats(){
+
+let text=document.getElementById("text").value;
+
+let words=text.trim()
+? text.trim().split(/\s+/).length
+:0;
+
+let chars=text.length;
+
+let charsNoSpace=
+text.replace(/\s/g,"").length;
+
+let lines=text.trim()
+? text.split('\n').length
+:0;
+
+let paragraphs=text.trim()
+? text.split(/\n+/).length
+:0;
+
+let reading=Math.ceil(words/200);
+
+document.getElementById("words").innerText=words;
+
+document.getElementById("chars").innerText=chars;
+
+document.getElementById("charsNoSpace").innerText=
+charsNoSpace;
+
+document.getElementById("lines").innerText=lines;
+
+document.getElementById("paragraphs").innerText=
+paragraphs;
+
+document.getElementById("reading").innerText=
+reading;
+}
+
+updateStats();
+</script>
+
+</div>

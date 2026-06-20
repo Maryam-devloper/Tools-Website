@@ -1,0 +1,269 @@
+<div class="pomodoro-tool">
+
+<style>
+.pomodoro-tool{
+max-width:450px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+
+.pomo-box{
+background:linear-gradient(135deg,#6d28d9,#4c1d95);
+padding:25px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,.25);
+text-align:center;
+color:#fff;
+}
+
+.pomo-title{
+font-size:28px;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.mode{
+display:flex;
+gap:8px;
+margin-bottom:15px;
+}
+
+.mode button{
+flex:1;
+padding:10px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+background:rgba(255,255,255,.15);
+color:#fff;
+}
+
+.mode button.active{
+background:#a855f7;
+}
+
+.timer{
+font-size:55px;
+font-weight:bold;
+background:#fff;
+color:#111827;
+padding:20px;
+border-radius:15px;
+margin-bottom:15px;
+}
+
+.controls{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+}
+
+.controls button{
+padding:12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+color:#fff;
+}
+
+.start{
+background:#22c55e;
+}
+
+.pause{
+background:#f59e0b;
+}
+
+.reset{
+background:#ef4444;
+}
+
+.stats{
+margin-top:15px;
+padding:12px;
+background:rgba(255,255,255,.12);
+border-radius:12px;
+}
+
+@media(max-width:480px){
+
+.timer{
+font-size:40px;
+}
+
+.controls button{
+font-size:14px;
+}
+}
+</style>
+
+<div class="pomo-box">
+
+<div class="pomo-title">
+ Pomodoro Timer
+</div>
+
+<div class="mode">
+<button id="focusBtn" class="active"
+onclick="setMode('focus',25)">
+Focus</button>
+
+<button id="shortBtn"
+onclick="setMode('short',5)">
+Short Break</button>
+
+<button id="longBtn"
+onclick="setMode('long',15)">
+Long Break</button>
+</div>
+
+<div class="timer" id="timer">
+25:00
+</div>
+
+<div class="controls">
+
+<button class="start"
+onclick="startTimer()">
+▶ Start
+</button>
+
+<button class="pause"
+onclick="pauseTimer()">
+⏸ Pause
+</button>
+
+<button class="reset"
+onclick="resetTimer()">
+🔄 Reset
+</button>
+
+</div>
+
+<div class="stats">
+Completed Sessions:
+<span id="sessions">0</span>
+</div>
+
+</div>
+
+<script>
+let totalSeconds=1500;
+let timer;
+let running=false;
+let completedSessions=0;
+let currentMode="focus";
+
+function updateDisplay(){
+
+let mins=Math.floor(totalSeconds/60);
+let secs=totalSeconds%60;
+
+document.getElementById("timer").innerText=
+String(mins).padStart(2,"0")
++":"
++
+String(secs).padStart(2,"0");
+}
+
+function startTimer(){
+
+if(running) return;
+
+running=true;
+
+timer=setInterval(()=>{
+
+if(totalSeconds>0){
+
+totalSeconds--;
+
+updateDisplay();
+
+}else{
+
+clearInterval(timer);
+
+running=false;
+
+playBeep();
+
+if(currentMode==="focus"){
+
+completedSessions++;
+
+document.getElementById("sessions").innerText=
+completedSessions;
+}
+
+alert("Time Completed!");
+
+}
+
+},1000);
+}
+
+function pauseTimer(){
+
+running=false;
+
+clearInterval(timer);
+}
+
+function resetTimer(){
+
+pauseTimer();
+
+if(currentMode==="focus")
+totalSeconds=1500;
+
+if(currentMode==="short")
+totalSeconds=300;
+
+if(currentMode==="long")
+totalSeconds=900;
+
+updateDisplay();
+}
+
+function setMode(mode,mins){
+
+currentMode=mode;
+
+pauseTimer();
+
+totalSeconds=mins*60;
+
+updateDisplay();
+
+document.querySelectorAll(".mode button")
+.forEach(btn=>btn.classList.remove("active"));
+
+if(mode==="focus")
+document.getElementById("focusBtn")
+.classList.add("active");
+
+if(mode==="short")
+document.getElementById("shortBtn")
+.classList.add("active");
+
+if(mode==="long")
+document.getElementById("longBtn")
+.classList.add("active");
+}
+
+function playBeep(){
+
+let audio=new Audio(
+"data:audio/wav;base64,UklGRl9vAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YU..."
+);
+
+audio.play().catch(()=>{});
+}
+
+updateDisplay();
+</script>
+
+</div>

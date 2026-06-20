@@ -1,0 +1,208 @@
+<div class="toolfactory-stopwatch">
+
+<style>
+.toolfactory-stopwatch{
+max-width:450px;
+margin:20px auto;
+font-family:Arial,sans-serif;
+}
+
+.sw-box{
+background:linear-gradient(135deg,#6d28d9,#4c1d95);
+padding:25px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,.25);
+text-align:center;
+color:#fff;
+}
+
+.sw-title{
+font-size:28px;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.sw-display{
+background:#fff;
+color:#111827;
+font-size:34px;
+font-weight:bold;
+padding:18px;
+border-radius:15px;
+margin-bottom:15px;
+letter-spacing:2px;
+}
+
+.sw-buttons{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-bottom:15px;
+}
+
+.sw-buttons button{
+padding:12px;
+border:none;
+border-radius:12px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+color:#fff;
+}
+
+.start-btn{
+background:#10b981;
+}
+
+.pause-btn{
+background:#f59e0b;
+}
+
+.reset-btn{
+background:#ef4444;
+}
+
+.lap-btn{
+background:#3b82f6;
+}
+
+.sw-laps{
+background:rgba(255,255,255,.15);
+border-radius:12px;
+padding:10px;
+max-height:220px;
+overflow-y:auto;
+text-align:left;
+}
+
+.sw-laps h3{
+margin:0 0 10px;
+font-size:18px;
+}
+
+.lap-item{
+padding:6px 0;
+border-bottom:1px solid rgba(255,255,255,.15);
+font-size:14px;
+}
+
+@media(max-width:480px){
+
+.sw-display{
+font-size:24px;
+padding:14px;
+}
+
+.sw-buttons button{
+font-size:14px;
+}
+}
+</style>
+
+<div class="sw-box">
+
+<div class="sw-title">
+⏱ Stopwatch          </div>
+<p>⏱ Hours : Minutes : Seconds : Milliseconds </p>
+
+<div class="sw-display" id="display">
+00:00:00:000
+</div>
+
+<div class="sw-buttons">
+<button class="start-btn" onclick="startWatch()">Start</button>
+<button class="pause-btn" onclick="pauseWatch()">Pause</button>
+<button class="reset-btn" onclick="resetWatch()">Reset</button>
+<button class="lap-btn" onclick="addLap()">Lap</button>
+</div>
+
+<div class="sw-laps">
+<h3>Lap Times</h3>
+<div id="laps"></div>
+</div>
+
+</div>
+
+<script>
+let timer=null;
+let startTime=0;
+let elapsed=0;
+let running=false;
+let lapCount=0;
+
+function updateDisplay(){
+
+let time=elapsed;
+
+let hrs=Math.floor(time/3600000);
+let mins=Math.floor((time%3600000)/60000);
+let secs=Math.floor((time%60000)/1000);
+let ms=time%1000;
+
+document.getElementById("display").innerText=
+String(hrs).padStart(2,"0")+":"+
+String(mins).padStart(2,"0")+":"+
+String(secs).padStart(2,"0")+":"+
+String(ms).padStart(3,"0");
+}
+
+function startWatch(){
+
+if(running) return;
+
+running=true;
+
+startTime=Date.now()-elapsed;
+
+timer=setInterval(function(){
+
+elapsed=Date.now()-startTime;
+
+updateDisplay();
+
+},10);
+}
+
+function pauseWatch(){
+
+running=false;
+
+clearInterval(timer);
+}
+
+function resetWatch(){
+
+running=false;
+
+clearInterval(timer);
+
+elapsed=0;
+
+lapCount=0;
+
+updateDisplay();
+
+document.getElementById("laps").innerHTML="";
+}
+
+function addLap(){
+
+if(elapsed===0) return;
+
+lapCount++;
+
+let lap=document.createElement("div");
+
+lap.className="lap-item";
+
+lap.innerText=
+"Lap "+lapCount+" - "+
+document.getElementById("display").innerText;
+
+document.getElementById("laps").prepend(lap);
+}
+
+updateDisplay();
+</script>
+
+</div>

@@ -1,0 +1,525 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"></meta>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+<title>Free ATS Resume Builder Pakistan</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:16px}
+.main-title{text-align:center;color:#fff;font-size:22px;font-weight:700;margin-bottom:4px;text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+.main-sub{text-align:center;color:rgba(255,255,255,0.85);font-size:13px;margin-bottom:12px}
+
+/* TEMPLATE SELECTOR */
+.tpl-wrap{max-width:1200px;margin:0 auto 14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.tpl-card{background:#fff;border-radius:10px;padding:10px 18px;cursor:pointer;border:3px solid transparent;transition:all .2s;text-align:center;min-width:120px;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+.tpl-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.2)}
+.tpl-card.active{border-color:#43e97b;box-shadow:0 4px 16px rgba(67,233,123,0.4)}
+.tpl-card .tpl-name{font-size:12px;font-weight:700;color:#333;margin-top:4px}
+.tpl-card .tpl-tag{font-size:10px;color:#888}
+.tpl-preview{width:60px;height:70px;border:1px solid #ddd;border-radius:4px;margin:0 auto 4px;overflow:hidden;background:#fff;display:flex;flex-direction:column;padding:4px;gap:2px}
+.tp-line{height:3px;border-radius:2px;background:#222}
+.tp-line.thick{height:5px}
+.tp-line.short{width:60%}
+.tp-line.xshort{width:40%}
+.tp-line.gray{background:#ccc}
+.tp-line.accent{background:#534AB7}
+.tp-line.accent2{background:#1D9E75}
+.tp-line.accent3{background:#e74c3c}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:1200px;margin:0 auto}
+@media(max-width:750px){.grid{grid-template-columns:1fr}}
+
+.form-panel{background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,0.18);overflow-y:auto;max-height:88vh}
+.sec-header{display:flex;align-items:center;gap:8px;margin:16px 0 10px;padding:8px 12px;border-radius:8px;font-size:13px;font-weight:700;color:#fff}
+.sec-header.blue{background:linear-gradient(90deg,#4facfe,#00f2fe)}
+.sec-header.purple{background:linear-gradient(90deg,#a18cd1,#fbc2eb)}
+.sec-header.green{background:linear-gradient(90deg,#43e97b,#38f9d7)}
+.sec-header.orange{background:linear-gradient(90deg,#f7971e,#ffd200)}
+.sec-header.pink{background:linear-gradient(90deg,#f953c6,#b91d73)}
+.sec-header.teal{background:linear-gradient(90deg,#11998e,#38ef7d)}
+
+.field{margin-bottom:10px}
+.field label{display:block;font-size:11px;font-weight:700;color:#555;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.field input,.field textarea{width:100%;padding:8px 11px;font-size:13px;border:2px solid #e8e8e8;border-radius:8px;font-family:Arial,sans-serif;color:#222;background:#fafafa;transition:border-color .2s;outline:none}
+.field input:focus,.field textarea:focus{border-color:#667eea;background:#fff}
+.field textarea{resize:vertical;min-height:55px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+.dyn-block{background:linear-gradient(135deg,#f8f9ff,#f0f4ff);border:2px solid #e0e8ff;border-radius:10px;padding:14px;margin-bottom:10px;position:relative}
+.dyn-block .rm{position:absolute;top:8px;right:8px;background:#ff4757;color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:13px;cursor:pointer;font-weight:700;line-height:22px;text-align:center}
+.add-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;background:linear-gradient(90deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;margin-bottom:12px}
+.add-btn:hover{opacity:.88}
+
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.chip{font-size:11px;padding:4px 10px;border-radius:999px;background:#f0f0f0;border:2px solid #ddd;color:#444;cursor:pointer;font-weight:600}
+.chip.on{background:linear-gradient(90deg,#667eea,#764ba2);color:#fff;border-color:#667eea}
+
+.dl-btn{display:block;width:100%;padding:13px;font-size:15px;font-weight:700;background:linear-gradient(90deg,#43e97b,#38f9d7);color:#1a1a1a;border:none;border-radius:10px;cursor:pointer;margin-top:14px;box-shadow:0 4px 15px rgba(67,233,123,0.35)}
+.dl-btn:hover{opacity:.9}
+
+.preview-panel{background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,0.18);overflow-y:auto;max-height:88vh}
+.preview-title{font-size:14px;font-weight:700;color:#333;margin-bottom:12px;display:flex;align-items:center;gap:8px;padding-bottom:8px;border-bottom:3px solid #667eea}
+.preview-badge{font-size:10px;background:#e8f5e9;color:#2e7d32;padding:2px 8px;border-radius:999px;font-weight:700}
+
+/* ── CV TEMPLATES ───────────────── */
+#cvOut{background:#fff;font-family:Arial,sans-serif;font-size:11.5px;line-height:1.55;color:#111;border:1px solid #ddd;padding:20px;min-height:400px}
+
+/* CLASSIC */
+.tpl-classic .cv-name{font-size:20px;font-weight:700;color:#000;margin-bottom:2px}
+.tpl-classic .cv-contact{font-size:10px;color:#444;margin-bottom:8px}
+.tpl-classic .cv-hr{border:none;border-top:1.5px solid #000;margin:6px 0}
+.tpl-classic .cv-sec{font-size:11px;font-weight:700;letter-spacing:.07em;margin:9px 0 3px;color:#000}
+.tpl-classic .cv-bold{font-size:11px;font-weight:700;color:#000}
+.tpl-classic .cv-sub{font-size:10px;color:#555;margin-bottom:2px}
+.tpl-classic .cv-txt{font-size:10.5px;color:#222;margin-bottom:4px;white-space:pre-line}
+.tpl-classic .cv-skill-wrap{display:flex;flex-wrap:wrap;gap:3px;margin:2px 0 5px}
+.tpl-classic .cv-skill{font-size:10px;color:#222;border:1px solid #888;padding:1px 5px;border-radius:2px}
+
+/* MODERN */
+.tpl-modern .cv-name{font-size:22px;font-weight:700;color:#000;margin-bottom:2px;letter-spacing:-.02em}
+.tpl-modern .cv-contact{font-size:10px;color:#444;margin-bottom:10px;letter-spacing:.03em}
+.tpl-modern .cv-hr{border:none;border-top:3px solid #534AB7;margin:6px 0}
+.tpl-modern .cv-sec{font-size:10px;font-weight:700;letter-spacing:.12em;margin:10px 0 4px;color:#534AB7;text-transform:uppercase}
+.tpl-modern .cv-bold{font-size:11.5px;font-weight:700;color:#000}
+.tpl-modern .cv-sub{font-size:10px;color:#666;margin-bottom:2px}
+.tpl-modern .cv-txt{font-size:10.5px;color:#333;margin-bottom:4px;white-space:pre-line}
+.tpl-modern .cv-skill-wrap{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 5px}
+.tpl-modern .cv-skill{font-size:10px;color:#534AB7;border:1px solid #534AB7;padding:1px 6px;border-radius:3px;font-weight:600}
+
+/* EXECUTIVE */
+.tpl-executive .cv-name{font-size:20px;font-weight:700;color:#000;margin-bottom:0;text-transform:uppercase;letter-spacing:.08em}
+.tpl-executive .cv-contact{font-size:10px;color:#555;margin-bottom:6px;text-align:center}
+.tpl-executive .cv-name{text-align:center}
+.tpl-executive .cv-hr{border:none;border-top:1px solid #000;margin:5px 0}
+.tpl-executive .cv-hr.thick{border-top:3px solid #000}
+.tpl-executive .cv-sec{font-size:11px;font-weight:700;letter-spacing:.1em;margin:9px 0 3px;color:#000;text-align:center;text-transform:uppercase}
+.tpl-executive .cv-bold{font-size:11px;font-weight:700;color:#000}
+.tpl-executive .cv-sub{font-size:10px;color:#555;margin-bottom:2px}
+.tpl-executive .cv-txt{font-size:10.5px;color:#222;margin-bottom:4px;white-space:pre-line}
+.tpl-executive .cv-skill-wrap{display:flex;flex-wrap:wrap;gap:3px;margin:2px 0 5px;justify-content:center}
+.tpl-executive .cv-skill{font-size:10px;color:#222;border:1px solid #666;padding:1px 6px}
+
+/* MINIMAL */
+.tpl-minimal .cv-name{font-size:19px;font-weight:700;color:#000;margin-bottom:2px;border-bottom:2px solid #1D9E75;padding-bottom:4px;display:inline-block}
+.tpl-minimal .cv-contact{font-size:10px;color:#444;margin-bottom:10px;margin-top:4px}
+.tpl-minimal .cv-hr{border:none;border-top:1px solid #ddd;margin:6px 0}
+.tpl-minimal .cv-sec{font-size:11px;font-weight:700;color:#1D9E75;margin:9px 0 3px;padding-left:6px;border-left:3px solid #1D9E75}
+.tpl-minimal .cv-bold{font-size:11px;font-weight:700;color:#000}
+.tpl-minimal .cv-sub{font-size:10px;color:#666;margin-bottom:2px}
+.tpl-minimal .cv-txt{font-size:10.5px;color:#333;margin-bottom:4px;white-space:pre-line}
+.tpl-minimal .cv-skill-wrap{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 5px}
+.tpl-minimal .cv-skill{font-size:10px;color:#1D9E75;background:#e8f5e9;padding:2px 7px;border-radius:3px;font-weight:600}
+
+.flex-sb{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px}
+.empty-msg{text-align:center;color:#bbb;padding:50px 10px;font-size:13px;line-height:2}
+</style>
+</head>
+<body>
+
+<div class="main-title">🎯 Free ATS Resume Builder</div>
+<div class="main-sub">For Pakistani Students &amp; Freshers — 4 Templates — Instant PDF Download — No Login</div>
+
+<!-- TEMPLATE SELECTOR -->
+<div class="tpl-wrap">
+
+  <div class="tpl-card active" onclick="setTpl('classic',this)">
+    <div class="tpl-preview">
+      <div class="tp-line thick"></div>
+      <div class="tp-line short gray"></div>
+      <div class="tp-line gray"></div>
+      <div class="tp-line thick" style="margin-top: 3px;"></div>
+      <div class="tp-line gray"></div>
+      <div class="tp-line short gray"></div>
+      <div class="tp-line thick" style="margin-top: 3px;"></div>
+      <div class="tp-line gray"></div>
+    </div>
+    <div class="tpl-name">Classic</div>
+    <div class="tpl-tag">Most ATS Safe</div>
+  </div>
+
+  <div class="tpl-card" onclick="setTpl('modern',this)">
+    <div class="tpl-preview">
+      <div class="tp-line thick"></div>
+      <div class="tp-line short gray"></div>
+      <div class="tp-line accent" style="height: 2px;"></div>
+      <div class="tp-line accent xshort" style="height: 2px; margin-top: 3px;"></div>
+      <div class="tp-line gray"></div>
+      <div class="tp-line short gray"></div>
+      <div class="tp-line accent xshort" style="height: 2px; margin-top: 3px;"></div>
+      <div class="tp-line gray"></div>
+    </div>
+    <div class="tpl-name">Modern</div>
+    <div class="tpl-tag">Purple Accents</div>
+  </div>
+
+  <div class="tpl-card" onclick="setTpl('executive',this)">
+    <div class="tpl-preview" style="align-items: center;">
+      <div class="tp-line thick" style="margin: 0 auto; width: 70%;"></div>
+      <div class="tp-line short gray" style="margin: 0 auto;"></div>
+      <div class="tp-line" style="height: 2px; margin: 2px auto; width: 90%;"></div>
+      <div class="tp-line xshort" style="margin: 2px auto;"></div>
+      <div class="tp-line gray" style="width: 90%;"></div>
+      <div class="tp-line xshort" style="margin: 2px auto;"></div>
+      <div class="tp-line gray" style="width: 90%;"></div>
+    </div>
+    <div class="tpl-name">Executive</div>
+    <div class="tpl-tag">Centered Style</div>
+  </div>
+
+  <div class="tpl-card" onclick="setTpl('minimal',this)">
+    <div class="tpl-preview">
+      <div class="tp-line thick" style="border-bottom: 2px solid #1D9E75; padding-bottom: 2px;"></div>
+      <div class="tp-line short gray"></div>
+      <div class="tp-line accent2 xshort" style="height: 2px; margin-top: 3px;"></div>
+      <div class="tp-line gray"></div>
+      <div class="tp-line short gray"></div>
+      <div class="tp-line accent2 xshort" style="height: 2px; margin-top: 3px;"></div>
+      <div class="tp-line gray"></div>
+    </div>
+    <div class="tpl-name">Minimal</div>
+    <div class="tpl-tag">Green Accents</div>
+  </div>
+
+</div>
+
+<div class="grid">
+
+  <!-- FORM -->
+  <div class="form-panel">
+
+    <div class="sec-header blue">👤 Personal Information</div>
+    <div class="field"><label>Full Name *</label><input id="f-name" oninput="gen()" placeholder="Ahmed Raza" /></div>
+    <div class="row2">
+      <div class="field"><label>Email *</label><input id="f-email" oninput="gen()" placeholder="ahmed@gmail.com" /></div>
+      <div class="field"><label>Phone *</label><input id="f-phone" oninput="gen()" placeholder="+92 300 1234567" /></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label>City</label><input id="f-city" oninput="gen()" placeholder="Karachi" /></div>
+      <div class="field"><label>LinkedIn</label><input id="f-li" oninput="gen()" placeholder="linkedin.com/in/ahmed" /></div>
+    </div>
+    <div class="field"><label>Professional Summary</label><textarea id="f-summary" oninput="gen()" placeholder="Motivated CS graduate seeking internship to apply skills in a professional environment."></textarea></div>
+
+    <div class="sec-header purple">🎓 Education</div>
+    <div id="edu-blocks"></div>
+    <button class="add-btn" onclick="addBlock('edu')">+ Add Another Degree</button>
+
+    <div class="sec-header green">⚡ Skills</div>
+    <div class="field"><label>Your Skills (comma separated)</label><input id="f-skills" oninput="gen()" placeholder="HTML, CSS, JavaScript, Python" /></div>
+    <div class="field"><label>Quick Add</label><div class="chips" id="chips"></div></div>
+
+    <div class="sec-header orange">🚀 Projects</div>
+    <div id="proj-blocks"></div>
+    <button class="add-btn" onclick="addBlock('proj')">+ Add Another Project</button>
+
+    <div class="sec-header pink">💼 Experience</div>
+    <div id="exp-blocks"></div>
+    <button class="add-btn" onclick="addBlock('exp')">+ Add Another Experience</button>
+
+    <div class="sec-header teal">🏆 Certifications</div>
+    <div id="cert-blocks"></div>
+    <button class="add-btn" onclick="addBlock('cert')">+ Add Another Certification</button>
+
+    <button class="dl-btn" onclick="downloadPDF()">⬇ Download ATS-Ready PDF</button>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-panel">
+    <div class="preview-title">👁 Live CV Preview <span class="preview-badge">ATS SAFE ✓</span></div>
+    <div class="tpl-classic" id="cvOut">
+      <div class="empty-msg">✍️ Start filling the form<br />Your CV appears here live<br /><span style="color: #cccccc; font-size: 11px;">Switch templates above anytime</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var currentTpl='classic';
+
+function setTpl(tpl,el){
+  currentTpl=tpl;
+  document.querySelectorAll('.tpl-card').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+  gen();
+}
+
+// CHIPS
+var QSKILLS=["HTML","CSS","JavaScript","TypeScript","React","Vue.js","Node.js","Python","Java","C++","C#","PHP","Laravel","Django","MySQL","MongoDB","PostgreSQL","Git","GitHub","Figma","MS Excel","MS Word","PowerPoint","Communication","Teamwork","Problem Solving","Leadership","Time Management","English","Urdu"];
+var chipsEl=document.getElementById("chips");
+QSKILLS.forEach(function(s){
+  var c=document.createElement("span");
+  c.className="chip";c.textContent=s;
+  c.onclick=function(){c.classList.toggle("on");syncSkill(s,c.classList.contains("on"));};
+  chipsEl.appendChild(c);
+});
+function syncSkill(sk,add){
+  var el=document.getElementById("f-skills");
+  var arr=el.value.split(",").map(function(x){return x.trim();}).filter(Boolean);
+  if(add){if(arr.indexOf(sk)===-1)arr.push(sk);}
+  else{arr=arr.filter(function(x){return x!==sk;});}
+  el.value=arr.join(", ");gen();
+}
+
+// DYNAMIC BLOCKS
+var counts={edu:0,proj:0,exp:0,cert:0};
+function addBlock(type){
+  counts[type]++;
+  var id=type+counts[type];
+  var el=document.getElementById(type+"-blocks");
+  var div=document.createElement("div");
+  div.className="dyn-block";div.id="block-"+id;
+  var html='<button class="rm" onclick="removeBlock(\''+id+'\')" title="Remove">✕</button>';
+  if(type==="edu"){
+    html+='<div class="field"><label>Degree &amp; University</label><input id="'+id+'-deg" placeholder="BS Computer Science — FAST NUCES Karachi" oninput="gen()"></div>';
+    html+='<div class="row2"><div class="field"><label>Year</label><input id="'+id+'-yr" placeholder="2020 – 2024" oninput="gen()"></div><div class="field"><label>CGPA</label><input id="'+id+'-gpa" placeholder="3.6 / 4.0" oninput="gen()"></div></div>';
+  } else if(type==="proj"){
+    html+='<div class="field"><label>Project Name</label><input id="'+id+'-name" placeholder="Student Management System" oninput="gen()"></div>';
+    html+='<div class="field"><label>Technologies</label><input id="'+id+'-tech" placeholder="Python, MySQL, Tkinter" oninput="gen()"></div>';
+    html+='<div class="field"><label>Description</label><textarea id="'+id+'-desc" placeholder="Manages student records and attendance for school administration." oninput="gen()"></textarea></div>';
+  } else if(type==="exp"){
+    html+='<div class="field"><label>Job Title &amp; Company</label><input id="'+id+'-title" placeholder="Web Dev Intern — ABC Solutions" oninput="gen()"></div>';
+    html+='<div class="field"><label>Duration</label><input id="'+id+'-dur" placeholder="June 2023 – August 2023" oninput="gen()"></div>';
+    html+='<div class="field"><label>Responsibilities</label><textarea id="'+id+'-resp" placeholder="Developed web pages using HTML, CSS, JavaScript." oninput="gen()"></textarea></div>';
+  } else if(type==="cert"){
+    html+='<div class="field"><label>Certification Name</label><input id="'+id+'-name" placeholder="Google IT Support Certificate" oninput="gen()"></div>';
+    html+='<div class="row2"><div class="field"><label>Issuer</label><input id="'+id+'-iss" placeholder="Coursera / DigiSkills" oninput="gen()"></div><div class="field"><label>Year</label><input id="'+id+'-yr" placeholder="2023" oninput="gen()"></div></div>';
+  }
+  div.innerHTML=html;el.appendChild(div);gen();
+}
+function removeBlock(id){var el=document.getElementById("block-"+id);if(el)el.remove();gen();}
+
+function gv(id){var el=document.getElementById(id);return el?el.value.trim():"";}
+function esc(t){return(t||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+// GENERATE PREVIEW
+function gen(){
+  var name=gv("f-name"),email=gv("f-email"),phone=gv("f-phone"),city=gv("f-city"),li=gv("f-li"),summ=gv("f-summary");
+  var skills=gv("f-skills").split(",").map(function(x){return x.trim();}).filter(Boolean);
+  var cvOut=document.getElementById("cvOut");
+  cvOut.className="tpl-"+currentTpl;
+
+  if(!name&&!email){
+    cvOut.innerHTML='<div class="empty-msg">✍️ Start filling the form<br>Your CV appears here live<br><span style="font-size:11px;color:#ccc">Switch templates above anytime</span></div>';
+    return;
+  }
+
+  var isExec=(currentTpl==="executive");
+  var contact=[email,phone,city,li].filter(Boolean).join("  |  ");
+  var html='';
+  html+='<div class="cv-name">'+esc(name)+'</div>';
+  html+='<div class="cv-contact">'+esc(contact)+'</div>';
+  html+=(isExec?'<hr class="cv-hr thick">':'<hr class="cv-hr">');
+
+  if(summ){html+='<div class="cv-sec">PROFESSIONAL SUMMARY</div><div class="cv-txt">'+esc(summ)+'</div><hr class="cv-hr">';}
+
+  var eduEls=document.querySelectorAll("[id^='edu'][id$='-deg']");
+  if(eduEls.length){
+    html+='<div class="cv-sec">EDUCATION</div>';
+    eduEls.forEach(function(el){
+      var p=el.id.replace("-deg","");
+      var deg=gv(p+"-deg"),yr=gv(p+"-yr"),gpa=gv(p+"-gpa");
+      if(!deg)return;
+      html+='<div class="flex-sb"><span class="cv-bold">'+esc(deg)+'</span><span class="cv-sub">'+esc(yr)+'</span></div>';
+      if(gpa)html+='<div class="cv-sub">CGPA: '+esc(gpa)+'</div>';
+    });
+    html+='<hr class="cv-hr">';
+  }
+
+  if(skills.length){
+    html+='<div class="cv-sec">SKILLS</div><div class="cv-skill-wrap">';
+    skills.forEach(function(s){html+='<span class="cv-skill">'+esc(s)+'</span>';});
+    html+='</div><hr class="cv-hr">';
+  }
+
+  var projEls=document.querySelectorAll("[id^='proj'][id$='-name']");
+  if(projEls.length){
+    html+='<div class="cv-sec">PROJECTS</div>';
+    projEls.forEach(function(el){
+      var p=el.id.replace("-name","");
+      var nm=gv(p+"-name"),tech=gv(p+"-tech"),desc=gv(p+"-desc");
+      if(!nm)return;
+      html+='<div class="cv-bold">'+esc(nm)+'</div>';
+      if(tech)html+='<div class="cv-sub">Technologies: '+esc(tech)+'</div>';
+      if(desc)html+='<div class="cv-txt">'+esc(desc)+'</div>';
+    });
+    html+='<hr class="cv-hr">';
+  }
+
+  var expEls=document.querySelectorAll("[id^='exp'][id$='-title']");
+  if(expEls.length){
+    html+='<div class="cv-sec">EXPERIENCE</div>';
+    expEls.forEach(function(el){
+      var p=el.id.replace("-title","");
+      var title=gv(p+"-title"),dur=gv(p+"-dur"),resp=gv(p+"-resp");
+      if(!title)return;
+      html+='<div class="flex-sb"><span class="cv-bold">'+esc(title)+'</span><span class="cv-sub">'+esc(dur)+'</span></div>';
+      if(resp)html+='<div class="cv-txt">'+esc(resp)+'</div>';
+    });
+    html+='<hr class="cv-hr">';
+  }
+
+  var certEls=document.querySelectorAll("[id^='cert'][id$='-name']");
+  if(certEls.length){
+    html+='<div class="cv-sec">CERTIFICATIONS</div>';
+    certEls.forEach(function(el){
+      var p=el.id.replace("-name","");
+      var nm=gv(p+"-name"),iss=gv(p+"-iss"),yr=gv(p+"-yr");
+      if(!nm)return;
+      html+='<div class="cv-txt">• '+esc(nm+(iss?" — "+iss:"")+(yr?" — "+yr:""))+'</div>';
+    });
+  }
+
+  cvOut.innerHTML=html;
+}
+
+// PDF DOWNLOAD
+function downloadPDF(){
+  var name=gv("f-name");
+  if(!name){alert("Please enter your Full Name first.");return;}
+  var email=gv("f-email"),phone=gv("f-phone"),city=gv("f-city"),li=gv("f-li"),summ=gv("f-summary");
+  var skills=gv("f-skills").split(",").map(function(x){return x.trim();}).filter(Boolean);
+  var jsPDF=window.jspdf.jsPDF;
+  var doc=new jsPDF({unit:"mm",format:"a4"});
+  var L=15,W=180,y=20,lh=5.2;
+
+  // accent color per template
+  var accent={classic:[0,0,0],modern:[83,74,183],executive:[0,0,0],minimal:[29,158,117]};
+  var ac=accent[currentTpl]||[0,0,0];
+  var isExec=(currentTpl==="executive");
+
+  function np(n){if(y+n>280){doc.addPage();y=15;}}
+  function hline(w){doc.setDrawColor(0);doc.setLineWidth(w||0.4);doc.line(L,y,L+W,y);y+=3;}
+
+  // NAME
+  doc.setFont("helvetica","bold");doc.setFontSize(18);doc.setTextColor(0,0,0);
+  if(isExec){doc.text(name.toUpperCase(),L+W/2,y,{align:"center"});}
+  else{doc.text(name,L,y);}
+  y+=7;
+
+  // CONTACT
+  var contact=[email,phone,city,li].filter(Boolean).join("  |  ");
+  doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(70,70,70);
+  var cl=doc.splitTextToSize(contact,W);
+  if(isExec){doc.text(cl,L+W/2,y,{align:"center"});}
+  else{doc.text(cl,L,y);}
+  y+=cl.length*lh+2;
+  if(isExec){hline(1);hline(0.3);}else{hline(0.5);}
+
+  function secTitle(t){
+    np(10);
+    doc.setFont("helvetica","bold");doc.setFontSize(10);
+    doc.setTextColor(ac[0],ac[1],ac[2]);
+    if(isExec){doc.text(t,L+W/2,y,{align:"center"});}
+    else if(currentTpl==="minimal"){
+      doc.setFillColor(ac[0],ac[1],ac[2]);
+      doc.rect(L,y-3,2,5,'F');
+      doc.text(t,L+5,y);
+    } else{doc.text(t,L,y);}
+    y+=2;
+    doc.setDrawColor(ac[0],ac[1],ac[2]);
+    doc.setLineWidth(currentTpl==="modern"?0.5:0.3);
+    doc.line(L,y,L+W,y);y+=4;
+    doc.setTextColor(0,0,0);
+  }
+  function bLine(t,right){
+    np(lh+1);
+    doc.setFont("helvetica","bold");doc.setFontSize(9.5);doc.setTextColor(0,0,0);
+    var lines=doc.splitTextToSize(t,right?W*0.7:W);
+    doc.text(lines,L,y);
+    if(right){doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(100,100,100);doc.text(right,L+W,y,{align:"right"});}
+    y+=lines.length*lh+0.5;
+  }
+  function subLine(t){
+    if(!t)return;np(lh);
+    doc.setFont("helvetica","normal");doc.setFontSize(8.5);doc.setTextColor(90,90,90);
+    doc.text(t,L,y);y+=lh;
+  }
+  function bodyTxt(t){
+    if(!t)return;np(lh);
+    doc.setFont("helvetica","normal");doc.setFontSize(9);doc.setTextColor(30,30,30);
+    var lines=doc.splitTextToSize(t,W);np(lines.length*lh);
+    doc.text(lines,L,y);y+=lines.length*lh+1;
+  }
+
+  if(summ){secTitle("PROFESSIONAL SUMMARY");bodyTxt(summ);y+=2;}
+
+  var eduEls=document.querySelectorAll("[id^='edu'][id$='-deg']");
+  if(eduEls.length){
+    secTitle("EDUCATION");
+    eduEls.forEach(function(el){
+      var p=el.id.replace("-deg","");
+      var deg=gv(p+"-deg"),yr=gv(p+"-yr"),gpa=gv(p+"-gpa");
+      if(!deg)return;
+      bLine(deg,yr);if(gpa)subLine("CGPA: "+gpa);y+=1;
+    });y+=1;
+  }
+
+  if(skills.length){secTitle("SKILLS");bodyTxt(skills.join("   •   "));y+=2;}
+
+  var projEls=document.querySelectorAll("[id^='proj'][id$='-name']");
+  if(projEls.length){
+    secTitle("PROJECTS");
+    projEls.forEach(function(el){
+      var p=el.id.replace("-name","");
+      var nm=gv(p+"-name"),tech=gv(p+"-tech"),desc=gv(p+"-desc");
+      if(!nm)return;
+      bLine(nm);if(tech)subLine("Technologies: "+tech);if(desc)bodyTxt(desc);y+=1;
+    });
+  }
+
+  var expEls=document.querySelectorAll("[id^='exp'][id$='-title']");
+  if(expEls.length){
+    secTitle("EXPERIENCE");
+    expEls.forEach(function(el){
+      var p=el.id.replace("-title","");
+      var title=gv(p+"-title"),dur=gv(p+"-dur"),resp=gv(p+"-resp");
+      if(!title)return;
+      bLine(title,dur);if(resp)bodyTxt(resp);y+=1;
+    });
+  }
+
+  var certEls=document.querySelectorAll("[id^='cert'][id$='-name']");
+  if(certEls.length){
+    secTitle("CERTIFICATIONS");
+    certEls.forEach(function(el){
+      var p=el.id.replace("-name","");
+      var nm=gv(p+"-name"),iss=gv(p+"-iss"),yr=gv(p+"-yr");
+      if(!nm)return;
+      bodyTxt("• "+nm+(iss?" — "+iss:"")+(yr?" — "+yr:""));
+    });
+  }
+
+  doc.save(name.replace(/\s+/g,"_")+"_"+currentTpl+"_ATS_CV.pdf");
+}
+
+window.onload=function(){addBlock('edu');addBlock('proj');addBlock('exp');addBlock('cert');};
+</script>
+</body>
+</html>
+<!-- FAQ SECTION -->
+<div style="max-width:900px;
+margin:auto;
+background:white;
+padding:25px;
+margin-top:30px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);">
+
+<h2>Frequently Asked Questions</h2>
+<h3>Q: Is this ATS resume builder completely free?</h3>
+<p> A: Yes. No login, no signup, no payment. 100% free forever. </p>
+<h3>Q: Will my resume pass ATS software?</h3>
+<p> A: Yes. The PDF uses Arial font, plain black text, no images — exactly what ATS requires. </p>
+<h3>Q: Should I add a photo to my ATS resume?</h3>
+<p> A: No. ATS software cannot read photos and it hurts your score. Never add photo to ATS CV. </p>
+<h3>Q: Can I add multiple degrees and projects?</h3>
+<p> A: Yes. Click Add Another Degree or Add Another Project buttons to add as many as you need. </p>
+<h3>Q: What companies in Pakistan use ATS?</h3>
+<p> A: Unilever, P&amp;G, HBL, Jazz, Systems Limited, Netsol Technologies and most multinationals in Pakistan use ATS software. </p>
+<h3>Q: Can freshers and students use this?</h3>
+<p> A: Absolutely. This tool is designed specifically for Pakistani students, fresh graduates and internship seekers. </p>
+<h3>Q: Is ATS resume format accepted for jobs in UAE and abroad?</h3>
+<p> A: Yes. ATS format is the international standard accepted in Pakistan, UAE, Saudi Arabia, UK and worldwide. </p>
+<h3>Q: Which template should I choose?</h3>
+<p> A: Classic is the safest for all ATS systems. Modern is good for IT and tech companies. Executive suits banking and corporate jobs. Minimal is great for fresh graduates. </p>
+</div>
